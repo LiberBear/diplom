@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Проект для ЧГУ">
+    <meta name="author" content="LiberBear">
+
+    <title>{% block title %}{% endblock title %}</title>
+
+    <!-- Bootstrap  CSS -->
+    <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <!-- Иконка -->
+    <link rel="icon" type="image/png" href="{% static "favicon.ico" %}">
+    <!-- Свои стили-->
+    <link href="{% static "css/blog-home.css" %}" rel="stylesheet">
+
+  </head>
+  <body>
+    <!-- Панель навигации -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">Заказ доставки в Чебоксарах</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <!--
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Домой
+                <span class="sr-only">(текущая)</span>
+              </a>
+            </li>-->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}">Главная</a>
+            </li>
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'detail-cart' pk=user.id%}">Корзина</a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              {% comment %} <a class="nav-link" href="{% url 'logout' %}">Выход</a> {% endcomment %}
+            </li>
+            {% else %}
+            <li class="nav-item">
+              {% comment %} <a class="nav-link" href="{% url 'login' %}">Вход</a> {% endcomment %}
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Контент -->
+    <div class="container">
+      <div class="row">
+       {% block content %}
+      
+      {% endblock content %}
+          <!-- Еще один виджет 
+          <div class="card my-4">
+            <h5 class="card-header">Простой виджет</h5>
+            <div class="card-body">
+              Тут будет что-то очень интересное
+            </div>
+          </div>-->
+
+        </div>
+      </div>
+    </div>
+    <!-- Подвал --> 
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Проект Федорова М.С</p>
+      </div>
+    </footer>
+    <!-- Библиотеки Bootstrap -->
+    <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+    <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+  </body>
+
+</html>

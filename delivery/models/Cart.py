@@ -33,7 +33,7 @@ class Cart(BaseModel):
 class CartItem(BaseModel):
     """Позиция в корзине"""
 
-    offer = models.OneToOneField(
+    offer = models.ForeignKey(
         Offer,
         on_delete=models.CASCADE,
         default=0,
@@ -42,7 +42,7 @@ class CartItem(BaseModel):
         blank=False
     )
     
-    cart = models.OneToOneField(
+    cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
         default=0,
