@@ -29,20 +29,25 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <!--
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Домой
-                <span class="sr-only">(текущая)</span>
-              </a>
-            </li>-->
+          
+
+
             <li class="nav-item">
               <a class="nav-link" href="{% url 'index' %}">Главная</a>
             </li>
+
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'offers_page' %}">Товары
+                <span class="sr-only">(оформление заказа)</span>
+              </a>
+            </li>
+
             {% if request.user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'detail-cart' pk=user.id%}">Корзина</a>
             </li>
             {% endif %}
+
             {% if user.is_authenticated %}
             <li class="nav-item">
               {% comment %} <a class="nav-link" href="{% url 'logout' %}">Выход</a> {% endcomment %}

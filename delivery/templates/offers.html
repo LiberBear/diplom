@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div class="row  row-cols-1 row-cols-sm-4 g-3">
+{% for offer in offers %}
+
+<div class="col">
+    <div class="card">
+        <img class="bd-placeholder-img card-img-top" width="100%" height="100%" src="{{offer.img.url}}">
+        <div class="card-body">
+           
+            <h5 class="card-title">{{offer.title}}</h5>
+            <p class="card-text">{{offer.desc}}</p>
+            <form>
+                <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field border-0 text-center w-25">
+                <input type="submit" class="btn btn-success" value="Добавить в корзину">
+            </form>
+            {% comment %} <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment %}
+        </div>
+    </div>
+  
+</div>
+
+
+{% endfor %}
+</div>
+{% endblock %}

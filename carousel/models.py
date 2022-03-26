@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 from tabnanny import verbose
 from django.db import models
 
@@ -16,6 +17,7 @@ class CarouselPost(models.Model):
 
     img = models.ImageField(
         verbose_name="Изображение",
+        upload_to="carousel"
     )
 
     class Meta:

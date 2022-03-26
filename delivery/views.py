@@ -6,14 +6,23 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 # Create your views here.
 from delivery.models.Cart import Cart, CartItem
 from delivery.models.Offer import Offer
+from carousel.models import CarouselPost
 
 
 """Index"""
 def index(request):
-    items = Offer.objects.order_by('id')
+    carousel = CarouselPost.objects.all()
     template = loader.get_template('index.html')
-    context = {'items': items}
+    context = {'carousel': carousel}
     return HttpResponse(template.render(context, request))
+
+def offers_page(request):
+    items = Offer.objects.all()
+    template = loader.get_template('offers.html')
+    context = {'offers': items}
+    return HttpResponse(template.render(context, request))
+    
+
 
 class DetailCart(DetailView):
     model = Cart

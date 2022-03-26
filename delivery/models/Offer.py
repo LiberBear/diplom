@@ -42,6 +42,11 @@ class Offer(BaseModel):
         default=0.0
     )   
 
+    img = models.ImageField(
+        verbose_name="Изображение",
+        upload_to="offers"
+    )
+
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
