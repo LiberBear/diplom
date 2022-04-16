@@ -42,7 +42,7 @@ class Cart(BaseModel):
         verbose_name_plural = "Корзины"
 
     def __str__(self):
-        return f'Корзина {self.user}'
+        return f'Корзина №{self.id} пользователя {self.user}'
 
 
 class CartItem(BaseModel):

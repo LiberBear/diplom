@@ -6,6 +6,19 @@ from delivery.models.Promo import Promo
 from delivery.models.Cart import Cart
 
 
+class OrderStatus(models.IntegerChoices):
+    CREATED = 0, "Создан"
+    PROCESSING = 1, "Обрабатывается"
+    WAITING = 2, "Сбор заказа"
+    DELIVERY = 3, "Передан в доставку"
+    DONE = 4, "Доставлен",
+    CANCELED_BY_USER = 5, "Отменен пользователем"
+    CANCELED_BY_OPERATOR = 6, "Отменен оператором"
+    ERROR_INTERNAL = 7, "Внутренняя ошибка сервиса",
+    ERROR_DELIVERY = 8, "Не доставлено",
+    ERROR_STOCK = 9, "Нет остатков",
+
+
 class Order(BaseModel):
 
     cart = models.ForeignKey(
@@ -43,6 +56,11 @@ class Order(BaseModel):
         null=True,
         blank=True
         )
+
+    status = models.IntegerField(
+        choices=OrderStatus.choices,
+        default=OrderStatus.CREATED
+    )
 
     class Meta:
         verbose_name = "Заказ"

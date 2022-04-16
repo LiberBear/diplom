@@ -24,14 +24,30 @@ class OffersViewSet(ModelViewSet):
     ordering_filters = ['title']
 
 
-class CartViewSet(ViewSet):
-    """Текущая корзинка пользователя"""
-    permission_classes = [IsAuthenticated]
+class CartViewSet(ModelViewSet):
+    queryset = None
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated | ReadOnly]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['offer', 'desc']
+    ordering_filters = ['created_at']
 
-    def list(self, request) -> Response:
-        user = request.user
+    def get_queryset(self):
+        user = self.request.user
         cart, cart_created = Cart.objects.get_or_create(user=user, ordered=False)
-        items = CartItem.objects.filter(cart=cart)
-        serializer = CartItemSerializer(items, many=True)
-        print(serializer.data)
-        return Response(serializer.data)
+        return CartItem.objects.filter(cart=cart)
+
+    #вот тут дописать метода по редактированию корзинки
+
+
+# class CartViewSet(ViewSet):
+#     """Текущая корзинка пользователя"""
+#     permission_classes = [IsAuthenticated]
+#
+#     def list(self, request) -> Response:
+#         user = request.user
+#         cart, cart_created = Cart.objects.get_or_create(user=user, ordered=False)
+#         items = CartItem.objects.filter(cart=cart)
+#         serializer = CartItemSerializer(items, many=True)
+#         print(serializer.data)
+#         return Response(serializer.data)
