@@ -1,9 +1,21 @@
+from pydoc import cram
 from django.db import models
 
 from backend.base_models import BaseModel
 from delivery.models.Promo import Promo
+from delivery.models.Cart import Cart
+
 
 class Order(BaseModel):
+
+    cart = models.ForeignKey(
+        Cart,
+        verbose_name="Корзина товаров",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False
+    )
+
     comment = models.CharField(
         max_length=512,
         verbose_name="Комментарий",

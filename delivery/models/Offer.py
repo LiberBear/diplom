@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.db import models
 
 from backend.base_models import BaseModel
@@ -46,6 +47,23 @@ class Offer(BaseModel):
         verbose_name="Изображение",
         upload_to="offers"
     )
+
+    stock = models.PositiveBigIntegerField(
+        verbose_name="Остатки",
+        default=0
+    )
+
+    def stock_increase(self, count=1):
+        self.stock = self.stock + count
+        self.save()
+
+    def stock_decrease(self, count=1):
+        self.stock = self.stock - count
+        self.save()
+
+    def stock_set(self, val=0):
+        self.stock = val
+        self.save()
 
     class Meta:
         verbose_name = "Товар"

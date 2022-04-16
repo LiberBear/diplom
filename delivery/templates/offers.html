@@ -3,28 +3,27 @@
 {% load static %}
 
 {% block content %}
-
+{% if not offers %}
+<h5 class="text-lg-center text-dark pt-5">Список продукции пока пуст, возращайтесь позже</h5>
+{% endif %}
 <div class="row  row-cols-1 row-cols-sm-4 g-3">
-{% for offer in offers %}
 
+{% for offer_form in offers %}
 <div class="col">
     <div class="card">
-        <img class="bd-placeholder-img card-img-top" width="100%" height="100%" src="{{offer.img.url}}">
+        <img class="bd-placeholder-img card-img-top" width="100%" height="100%" src="{{offer_form.instance.img.url}}">
         <div class="card-body">
-           
-            <h5 class="card-title">{{offer.title}}</h5>
-            <p class="card-text">{{offer.desc}}</p>
-            <form>
-                <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field border-0 text-center w-25">
-                <input type="submit" class="btn btn-success" value="Добавить в корзину">
+            <h5 class="card-title">{{offer_form.title.value}}</h5>
+            <p class="card-text">{{offer_form.desc.value}}</p>
+            <form method="POST" action="{% url "add_to_cart" %}">{% csrf_token %}
+                <input type="hidden" name="offer_id" value="{{ offer_form.instance.id }}">
+                <input type="hidden" name="referer" value="{{ request.path }}">
+                <input type="number"  name="quantity" step="1" max="{{ offer_form.stock.value }}" value="{% if  offer_form.stock.value > 0 %}1{% else %}0{% endif %}" class="form-control text-center  my-3">
+                <input type="submit" class="btn btn-primary" value="Добавить в корзину">
             </form>
-            {% comment %} <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment %}
         </div>
     </div>
-  
 </div>
-
-
 {% endfor %}
 </div>
 {% endblock %}

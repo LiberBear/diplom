@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from backend.base_models import BaseModel
 
+
 class Promo(BaseModel):
     code = models.CharField(
         max_length=16,
