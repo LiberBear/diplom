@@ -1,7 +1,9 @@
 from django.db import models
+
 from backend.base_models import BaseModel
 
-class Measure(models.Model):
+
+class Measure(BaseModel):
     title = models.CharField(
         max_length=128,
         verbose_name="Наименование",

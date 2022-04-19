@@ -4,11 +4,12 @@ from rest_framework.routers import SimpleRouter
 
 from delivery.views import index as index_view
 from delivery.views import offers_page
-from delivery.api import OffersViewSet, CartViewSet
+from delivery.api import OffersViewSet, CartViewSet, OrderViewSet
 
 router = SimpleRouter()
-router.register(r'offers', OffersViewSet)
-router.register(r'cart', CartViewSet, 'carts')
+router.register(r'offers', OffersViewSet, basename='offers')
+router.register(r'cart', CartViewSet, basename='cart')
+router.register(r'order', OrderViewSet, basename='order')
 
 urlpatterns = [
     # Common pages

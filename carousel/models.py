@@ -1,8 +1,11 @@
-from distutils.command.upload import upload
-from tabnanny import verbose
+import uuid
+
 from django.db import models
 
-# Create your models here.
+
+def carousel_directory_path(instance, filename):
+    return 'carousel/img_{0}.{1}'.format(uuid.uuid4().hex, filename.split('.')[-1])
+
 
 class CarouselPost(models.Model):
     title = models.CharField(
@@ -17,7 +20,7 @@ class CarouselPost(models.Model):
 
     img = models.ImageField(
         verbose_name="Изображение",
-        upload_to="carousel"
+        upload_to=carousel_directory_path
     )
 
     class Meta:

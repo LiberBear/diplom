@@ -1,9 +1,10 @@
-from pydoc import cram
 from django.db import models
 
 from backend.base_models import BaseModel
+
 from delivery.models.Promo import Promo
 from delivery.models.Cart import Cart
+from delivery.models.Address import Address
 
 
 class OrderStatus(models.IntegerChoices):
@@ -21,12 +22,14 @@ class OrderStatus(models.IntegerChoices):
 
 class Order(BaseModel):
 
-    cart = models.ForeignKey(
-        Cart,
-        verbose_name="Корзина товаров",
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False
+    items = models.JSONField(
+        verbose_name="Товары (снимок)"
+    )
+
+    address = models.ForeignKey(
+        Address,
+        verbose_name="Адрес",
+        on_delete=models.CASCADE
     )
 
     comment = models.CharField(
@@ -35,11 +38,6 @@ class Order(BaseModel):
         blank=True,
         null=True
         )
-
-    amount = models.IntegerField(
-        verbose_name="Количество",
-        default=0
-    )
 
     sum = models.DecimalField(
         verbose_name="Сумма",
@@ -59,7 +57,8 @@ class Order(BaseModel):
 
     status = models.IntegerField(
         choices=OrderStatus.choices,
-        default=OrderStatus.CREATED
+        default=OrderStatus.CREATED,
+        verbose_name="Статус заказа"
     )
 
     class Meta:
@@ -67,5 +66,5 @@ class Order(BaseModel):
         verbose_name_plural = "Заказы"
 
     def __str__(self):
-        return f'{self.sum}'
+        return f'Заказ {self.id} на основе {self.cart}'
     

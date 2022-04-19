@@ -138,3 +138,13 @@ MEDIA_URL = '/user_media/'
 ADMIN_MEDIA_PREFIX = '/admin_media/'
 SITE_ID = 1
 #STATICFILES_DIRS = ( os.path.join('static'), )
+
+# API
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
+}

@@ -1,8 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-from backend.base_models import BaseModel
-from delivery.models.Offer import Offer
 from django.db.models import F, Sum
+from django.db.transaction import atomic
+
+from backend.base_models import BaseModel
+from delivery.models.Offer import Offer, OutOfStockException
+
+
+class TooBigCartException(Exception):
+    pass
+
+
+class TooLowCartException(Exception):
+    pass
 
 
 class Cart(BaseModel):
@@ -24,7 +34,7 @@ class Cart(BaseModel):
 
     def clear(self):
         """Удалить все товары из корзины пользователя"""
-        items = CartItem.objects.filter(cart=self.id)
+        items = CartItem.objects.filter(cart=self)
         if items.exists():
             items.all().delete()
 
@@ -75,6 +85,35 @@ class CartItem(BaseModel):
     def total(self):
         """Получить полную стоимость позиции"""
         return self.offer.price * self.quantity
+
+    @atomic
+    def increase(self, amount: int = 1):
+        """Увеличение количества товара в коризне с проверкой """
+        stock = self.offer.stock
+        total_quantity = self.quantity + amount
+        if stock == 0:
+            raise OutOfStockException()
+
+        if total_quantity > stock:
+            raise TooBigCartException()
+
+        self.quantity = self.quantity + amount
+        self.save()
+
+    @atomic
+    def decrease(self, amount: int = 1):
+        """Уменьшение количества товара в коризне с проверкой """
+        if amount > self.quantity:
+            raise TooLowCartException()
+
+        self.quantity = self.quantity - amount
+        self.save()
+
+    @atomic
+    def set(self, amount: int):
+        """Установка количества товара в коризне без проверки"""
+        self.quantity = amount
+        self.save()
 
     class Meta:
         verbose_name = "Позиция в корзине"

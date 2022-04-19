@@ -1,8 +1,18 @@
-from tabnanny import verbose
+import uuid
+
 from django.db import models
 
 from backend.base_models import BaseModel
-from delivery.models.Measure import Measure 
+
+from delivery.models.Measure import Measure
+
+
+def offer_directory_path(instance, filename):
+    return 'offers/img_{0}.{1}'.format(uuid.uuid4().hex, filename.split('.')[-1])
+
+
+class OutOfStockException(Exception):
+    pass
 
 
 class Offer(BaseModel):
@@ -45,7 +55,7 @@ class Offer(BaseModel):
 
     img = models.ImageField(
         verbose_name="Изображение",
-        upload_to="offers"
+        upload_to=offer_directory_path
     )
 
     stock = models.PositiveBigIntegerField(
@@ -53,17 +63,26 @@ class Offer(BaseModel):
         default=0
     )
 
-    def stock_increase(self, count=1):
+    hidden = models.BooleanField(
+        verbose_name="Скрыт",
+        default=False
+    )
+
+    def increase_stock(self, count=1):
         self.stock = self.stock + count
         self.save()
 
-    def stock_decrease(self, count=1):
+    def decrease_stock(self, count=1):
         self.stock = self.stock - count
         self.save()
 
-    def stock_set(self, val=0):
+    def set_stock(self, val=0):
         self.stock = val
         self.save()
+
+    def have_stock(self) -> bool:
+        return self.stock > 0
+
 
     class Meta:
         verbose_name = "Товар"
