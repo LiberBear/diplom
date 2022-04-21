@@ -31,6 +31,7 @@ class OfferSerializer(ModelSerializer):
 
 
 class CartItemSerializer(ModelSerializer):
+    offer = OfferSerializer(read_only=True)
 
     class Meta:
         model = CartItem
