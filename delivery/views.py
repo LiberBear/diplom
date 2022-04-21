@@ -36,17 +36,18 @@ def offers_page(request):
     context = {'offers': offer_forms}
     return HttpResponse(template.render(context, request))
 
-#     user = self.request.user
-#     current_cart = Cart.objects
-#     queryset = CartItem.objects.all().order_by("id")
-#     serializer_class = OfferSerializer
-#     permission_classes = [IsAuthenticated]
-#     filter_backends = [SearchFilter, OrderingFilter]
-#     search_fields = ['title', 'desc']
-#     ordering_filters = ['title']
-#
-#     def get_user(self):
-# #
+
+@login_required()
+def cart_page(request):
+    """Страница корзины"""
+    user = request.user
+    cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
+    cart_items = CartItem.objects.filter(cart=cart)
+    template = loader.get_template('cart/detail_cart.html')
+    context = {'cart_items': cart_items, 'cart': cart}
+    return HttpResponse(template.render(context, request))
+
+
 # class DetailCart(DetailView):
 #
 #     model = Cart

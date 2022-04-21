@@ -32,20 +32,26 @@ class Cart(BaseModel):
         default=False
     )
 
+    total_price = models.DecimalField(
+        default=0.0,
+        max_digits=15,
+        decimal_places=2,
+        verbose_name="Общая сумма корзины"
+    )
+
     def clear(self):
         """Удалить все товары из корзины пользователя"""
         items = CartItem.objects.filter(cart=self)
         if items.exists():
             items.all().delete()
 
-    @property
-    def total(self):
-        """Получить полную стоимость корзины"""
+    def recalc_total(self):
+        """Пересчитать полную стоимость корзины"""
         cart_items = CartItem.objects.filter(cart=self.id).prefetch_related("offer")
         annotation = cart_items.annotate(total_item=F('quantity')*F('offer__price'))
         aggregation = annotation.aggregate(total_cart=Sum('total_item'))
-        total = aggregation.get('total_cart')
-        return total
+        self.total_price = aggregation.get('total_cart')
+        self.save()
 
     class Meta:
         verbose_name = "Корзина"
