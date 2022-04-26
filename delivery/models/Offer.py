@@ -12,7 +12,8 @@ def offer_directory_path(instance, filename):
 
 
 class OutOfStockException(Exception):
-    pass
+    def __str__(self):
+        return 'Товар закончился на складе'
 
 
 class Offer(BaseModel):

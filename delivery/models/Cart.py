@@ -8,11 +8,13 @@ from delivery.models.Offer import Offer, OutOfStockException
 
 
 class TooBigCartException(Exception):
-    pass
+    def __str__(self):
+        return 'Вы добавили в корзину товара больше чем есть в наличии'
 
 
 class TooLowCartException(Exception):
-    pass
+    def __str__(self):
+        return 'Вы попытались уменьшить количество позиции на число превышающее его текущее количество у вас в корзине'
 
 
 class Cart(BaseModel):
@@ -84,7 +86,7 @@ class CartItem(BaseModel):
 
     quantity = models.IntegerField(
         verbose_name="Количество",
-        default=1,
+        default=0,
     )
 
     @property

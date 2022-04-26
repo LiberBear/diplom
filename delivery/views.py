@@ -1,13 +1,20 @@
+try:
+    import ujson as json
+except ImportError:
+    import json
+
 from django.shortcuts import render
 from django.template import loader
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 # Create your views here.
-from delivery.models.Cart import Cart, CartItem
-from delivery.models.Offer import Offer
+from delivery.models.Cart import Cart, CartItem, TooBigCartException
+from delivery.models.Offer import Offer, OutOfStockException
 from carousel.models import CarouselPost
 #from django.db.models import F
 
@@ -48,6 +55,42 @@ def cart_page(request):
     return HttpResponse(template.render(context, request))
 
 
+@csrf_exempt
+@login_required()
+@require_http_methods(["POST"])
+def cart_manage(request):
+    """Добавление и удаление позиций в корзине"""
+
+    # различные проверки входящего запроса
+    if request.content_type != 'application/json':
+        return HttpResponseBadRequest(f'unsupported content type {request.content_type}')
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        return JsonResponse({'status': 'error', 'msg': 'Bad json'}, status=400)
+    # сама обработка запроса
+    form = AddToCartForm(data)
+    if not form.is_valid():
+        return JsonResponse({'status': 'error', 'msg': 'You post something bad'}, status=400)
+    offer_id = form.cleaned_data.get('offer')
+    quantity = form.cleaned_data.get('quantity')
+    try:
+        offer = Offer.objects.get(id=offer_id)
+    except Offer.DoesNotExist:
+        return JsonResponse({'status': 'error', 'msg': 'Такого товара не существует'}, status=400)
+
+    user = request.user
+    cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
+    cart_item, _ = CartItem.objects.get_or_create(cart=cart, offer=offer)
+
+    try:
+        cart_item.increase(amount=quantity)
+    except OutOfStockException as e:
+        return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+    except TooBigCartException as e:
+        return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+
+    return JsonResponse({'status': 'ok', 'msg': "Товар успешно добавлен в корзину"})
 # class DetailCart(DetailView):
 #
 #     model = Cart
