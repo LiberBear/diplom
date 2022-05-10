@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}Потверждение почты{% endblock %}
+{% block header %}{% include 'cardex_header_profile.html' %}{% endblock %}
+{% block content %}
+ <section class="authorization">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="content">
+          <h3>Потверждение почты</h3>
+          <br>
+          <center><p>{% blocktrans %}Письмо с потверждением отправлено на <b>{{ email }}</b>. Если оно не появится в течении 5 минут проверьте папку спам{% endblocktrans %}</p>
+    <p><a href="{{ success_url }}">Назад</a></p></center>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block footer %}{% include 'cardex_footer.html' %}{% endblock %}

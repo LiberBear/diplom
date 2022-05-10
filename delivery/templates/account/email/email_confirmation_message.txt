@@ -1,0 +1,5 @@
+{% load i18n account_tags %}{% blocktrans with site_name=current_site.name %}Кто-то создал аккаунт на {{ site_name }}, указав вашу почту.
+Для потверждения перейдите по этой ссылке {{ activate_url }}
+
+Если это были не вы, просто проигнорируйте данное письмо.
+{% endblocktrans %}

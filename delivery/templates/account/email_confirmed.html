@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Почта потверждена{% endblock %}
+{% block header %}{% include 'cardex_header_profile.html' %}{% endblock %}
+{% block content %}
+<section class="authorization">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="content">
+          <h3>Почта потверждена</h3>
+          <br>
+          <center>p>{% blocktrans with email=confirmation.email_address.email %}Ваша почта потверждена <b>{{ email }}</b>{% endblocktrans %}</p></center>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block footer %}{% include 'cardex_footer.html' %}{% endblock %}
