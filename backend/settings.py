@@ -12,19 +12,27 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os 
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    PROJECT_NAME=(str, 'Django DeliverySystem'),
+    ALLOWED_HOSTS=(list, [])
+)
+environ.Env.read_env()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r&1tf!voi+p8mk+pa$c05i#9#695oob-^vklbb7o*lk%a*_he1'
+
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -41,8 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'widget_tweaks',
     'account',
+    'phonenumber_field',
     'delivery',
-    'messenger',
+    #'messenger',
     'carousel'
 ]
 
@@ -113,8 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru-Ru'
-
+LANGUAGE_CODE = 'ru-RU'
+DEFAULT_CHARSET = "utf-8"
 TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
@@ -133,18 +142,43 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/user_media/'
 ADMIN_MEDIA_PREFIX = '/admin_media/'
+
+# EXTRA
 SITE_ID = 1
+PROJECT_NAME = env('PROJECT_NAME')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = f'{PROJECT_NAME} <{EMAIL_HOST_USER}>'
+SERVER_EMAIL = EMAIL_HOST
+ADMINS = [('Mikhail', 'mihailfs@ya.ru'), (PROJECT_NAME, SERVER_EMAIL)]
+ACCOUNT_EMAIL_UNIQUE = True
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = False # требовать почту
+ACCOUNT_SIGNUP_REDIRECT_URL = 'index'
+ACCOUNT_LOGIN_REDIRECT_URL = 'index'
+ACCOUNT_USER_DISPLAY = lambda user: user.email
+LOGIN_URL = 'account_login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'account_login'
+AUTHENTICATION_BACKENDS = (
+    'account.auth_backends.EmailAuthenticationBackend',
+ )
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 #STATICFILES_DIRS = ( os.path.join('static'), )
 
-# API
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    )
-}
+# # API
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#     ),
+#     'DEFAULT_PARSER_CLASSES': (
+#         'rest_framework.parsers.JSONParser',
+#     )
+# }

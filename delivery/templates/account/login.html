@@ -2,62 +2,66 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block title %}
-Авторизация
+    Авторизация
 {% endblock %}
 {% block additional_styles %}
-<link href="{% static "css/signin.css" %}" rel="stylesheet">
+    <link href="{% static "css/signin.css" %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
-<main class="form-signin">
-  <form method="post" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-      {% csrf_token %}
-    <img class="mb-4" src="{% static "img/logo.svg" %}" alt="" width="72" height="57">
-    <h1 class="h3 mb-3 fw-normal">Пожалуйста авторизируйся</h1>
-    <div class="form-floating">
-        {{ form.username | add_class:'form-control' |attr:"placeholder:Пользователь"}}
-      {{ form.username.label_tag }}
-    </div>
-    <div class="form-floating">
-{#      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
-        {{ form.password | add_class:'form-control' |attr:"placeholder:Пароль"}}
-      {{ form.password.label_tag }}
-    </div>
+    <main class="form-signin">
+        <form method="post" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %}
+              enctype="multipart/form-data"{% endif %}>
+            {% csrf_token %}
+           <div class="justify-content-center">
+                <img src="{% static "img/logo.svg" %}" alt="" width="72" height="57">
+            <h1 class="h3 text-center">Пожалуйста авторизируйся</h1>
+            <div class="form-floating">
+                {{ form.email | add_class:'form-control' |attr:"placeholder:Пользователь"}}
+                {{ form.email.label_tag }}
+            </div>
+            <div class="form-floating">
+                {#      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
+                {{ form.password | add_class:'form-control' |attr:"placeholder:Пароль"}}
+                {{ form.password.label_tag }}
+            </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Запомнить меня
-      </label>
-    </div>
-      <input type="hidden" name="next" value="{{ next }}">
-    <button class="w-100 btn btn-lg btn-primary" type="submit" value="login">Войти</button>
-{#    <p class="mt-5 mb-3 text-muted">&copy; 2021</p>#}
-  </form>
-{% for field in form %}
-        {% for error in field.errors %}
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Запомнить меня
+                </label>
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+            <button class="w-100 btn btn-lg btn-primary" type="submit" value="login">Войти</button>
+               <a href="{% url 'account_signup' %}"  class="w-100 px-10 btn btn-lg btn-primary">Зарегистрироваться</a>
+            {#    <p class="mt-5 mb-3 text-muted">&copy; 2021</p>#}
+           </div>
+        </form>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
             <div class="alert alert-danger">
                 <strong>{{ error|escape }}</strong>
             </div>
         {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
 
 
-{#{% if next %}#}
-{#    {% if user.is_authenticated %}#}
-{#    <p>Ошибка доступа.</p>#}
-{#    {% else %}#}
-{#    <p>Please login to see this page.</p>#}
-{#    {% endif %}#}
-{#{% endif %}#}
-</main>
+        {#{% if next %}#}
+        {#    {% if user.is_authenticated %}#}
+        {#    <p>Ошибка доступа.</p>#}
+        {#    {% else %}#}
+        {#    <p>Please login to see this page.</p>#}
+        {#    {% endif %}#}
+        {#{% endif %}#}
+    </main>
 
 
-{# Assumes you setup the password_reset view in your URLconf #}
-{#<p><a href="{% url 'password_reset' %}">Lost password?</a></p>#}
+    {# Assumes you setup the password_reset view in your URLconf #}
+    {#<p><a href="{% url 'password_reset' %}">Lost password?</a></p>#}
 
 {% endblock %}
 

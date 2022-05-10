@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import F, Sum
 from django.db.transaction import atomic
+from django.db.models.signals import post_save
 
 from backend.base_models import BaseModel
+
 from delivery.models.Offer import Offer, OutOfStockException
 
 
@@ -47,6 +49,7 @@ class Cart(BaseModel):
         if items.exists():
             items.all().delete()
 
+    @atomic
     def recalc_total(self):
         """Пересчитать полную стоимость корзины"""
         cart_items = CartItem.objects.filter(cart=self.id).prefetch_related("offer")
@@ -129,3 +132,11 @@ class CartItem(BaseModel):
 
     def __str__(self):
         return f'{self.offer} - {self.quantity} шт. - {self.cart.user}'    
+
+
+def after_cart_item_save(sender, instance: CartItem, *args, **kwargs):
+    "Доп. процедуры после изменения состояния позиции в корзине"
+    instance.cart.recalc_total()
+
+
+post_save.connect(after_cart_item_save, sender=CartItem)

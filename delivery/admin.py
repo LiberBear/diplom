@@ -4,7 +4,8 @@ from delivery.models import (Promo,
                              Order,
                              Measure,
                              Cart,
-                             Address
+                             Address,
+                             Profile
                              )
 from delivery.models.Cart import CartItem
 # Register your models here.
@@ -15,3 +16,4 @@ admin.site.register(Measure)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(Address)
+admin.site.register(Profile)

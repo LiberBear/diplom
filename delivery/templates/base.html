@@ -46,7 +46,7 @@
 
             {% if request.user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'detail-cart' %}">Корзина</a>
+              <a class="nav-link" href="{% url 'cart_detail' %}">Корзина</a>
             </li>
             {% endif %}
 
@@ -81,10 +81,10 @@
       </div>
     </div>
     <!-- Подвал --> 
-    <footer class="footer bg-dark ">
-      <div class="container">
-        <p class="m-0 text-center text-white">Проект Федорова М.С</p>
-      </div>
+{#    <footer class="footer bg-dark ">#}
+{#      <div class="container">#}
+{#        <p class="m-0 text-center text-white">Проект Федорова М.С</p>#}
+{#      </div>#}
     </footer>
     <!-- Библиотеки Bootstrap -->
     <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>

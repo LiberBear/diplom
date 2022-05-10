@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import pre_save
 
 from backend.base_models import BaseModel
 
@@ -21,10 +22,14 @@ class OrderStatus(models.IntegerChoices):
 
 
 class Order(BaseModel):
+    """Модель заказа"""
 
-    items = models.JSONField(
-        verbose_name="Товары (снимок)"
-    )
+    cart = models.OneToOneField(
+        Cart,
+        on_delete=models.CASCADE,
+        verbose_name="Корзина",
+        primary_key=True
+        )
 
     address = models.ForeignKey(
         Address,
@@ -46,15 +51,6 @@ class Order(BaseModel):
         default=0.0
     )
 
-    promo = models.ForeignKey(
-        Promo,
-        on_delete=models.CASCADE,
-        default=0,
-        verbose_name="Промокод",
-        null=True,
-        blank=True
-        )
-
     status = models.IntegerField(
         choices=OrderStatus.choices,
         default=OrderStatus.CREATED,
@@ -67,4 +63,22 @@ class Order(BaseModel):
 
     def __str__(self):
         return f'Заказ {self.id} на основе {self.cart}'
-    
+
+
+def order_pre_save(sender, instance: Order, *args, **kwargs):
+    """Доп процедуры перед сохранением заказа"""
+    cart = instance.cart
+    cart.is_ordered = True  # устанавливаем флаг на корзину
+    cart.recalc_total() # пересчет корзины
+
+
+# def order_post_save(sender, instance: Order, *args, **kwargs):
+#     """Доп процедуры после сохранения заказа"""
+#     cart = instance.cart
+#     cart.is_ordered = True #устанавливаем флаг на корзину
+#     cart.save()
+
+
+pre_save.connect(order_pre_save, sender=Order)
+#post_save.connect(order_post_save, sender=Order)
+
