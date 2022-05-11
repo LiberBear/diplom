@@ -23,12 +23,14 @@ class Profile(BaseModel):
         verbose_name='Дата рождения',
     )
     address = models.CharField(
-        blank=False,
+        blank=True,
+        null=True,
         max_length=500,
         verbose_name='Адрес проживания',
     )
     phone_number = PhoneNumberField(
-        blank=False,
+        blank=True,
+        null=True,
         verbose_name='Номер телефона',
     )
 
@@ -36,6 +38,9 @@ class Profile(BaseModel):
         db_table = 'profile'
         verbose_name = 'Профиль пользователя'
         verbose_name_plural = 'Профили пользователей'
+
+    def __str__(self):
+        return f'Профиль {self.user.email}'
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):

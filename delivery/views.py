@@ -22,11 +22,11 @@ from account.views import SignupView as SignupView_
 #delivery
 from delivery.models.Cart import Cart, CartItem, TooBigCartException
 from delivery.models.Offer import Offer, OutOfStockException
+from delivery.models.Profile import Profile
 from delivery.forms import AddToCartForm, OfferForm
 
 
 from carousel.models import CarouselPost
-
 
 
 class IndexView(TemplateView):
@@ -36,25 +36,30 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         carousel = CarouselPost.objects.all()
-        template = loader.get_template('index.html')
         context['carousel'] = carousel
+        return context
 
 
-@method_decorator(login_required, name='dispatch')
 class OffersView(TemplateView):
     """Страница списка товаров"""
     template_name = 'offers.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #user = self.request.user
         offers = Offer.objects.all()
-        offer_forms = []
-        for offer in offers:
-            form = OfferForm(instance=offer)
-            print(form["img"])
-            offer_forms.append(form)
-        context['offers'] = offer_forms
+        context['offers'] = offers
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class ProfileView(TemplateView):
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        context['profile'] = profile
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -69,6 +74,7 @@ class CartView(TemplateView):
         cart_items = CartItem.objects.filter(cart=cart)
         context['cart_items'] = cart_items
         context['cart'] = cart
+        return context
 
 
 @csrf_exempt

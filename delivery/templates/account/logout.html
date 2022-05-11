@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}
+    Выход
+{% endblock %}
+{% block additional_styles %}
+    <link href="{% static "css/signin.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+ <div class="container">
+        <div class="row">
+   <div class="col-md-5">
+            <form method="POST" action="{% url "account_logout" %}">
+                <h2>Выход</h2>
+                <fieldset>
+                    {% csrf_token %}
+                    <p>Вы действительно хотите выйти?</p>
+                    <button type="submit" class="btn btn-primary">Выйти</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

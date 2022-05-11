@@ -12,29 +12,34 @@
         <form method="post" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %}
               enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
-           <div class="justify-content-center">
-                <img src="{% static "img/logo.svg" %}" alt="" width="72" height="57">
-            <h1 class="h3 text-center">Пожалуйста авторизируйся</h1>
-            <div class="form-floating">
-                {{ form.email | add_class:'form-control' |attr:"placeholder:Пользователь"}}
-                {{ form.email.label_tag }}
-            </div>
-            <div class="form-floating">
-                {#      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
-                {{ form.password | add_class:'form-control' |attr:"placeholder:Пароль"}}
-                {{ form.password.label_tag }}
+            <h1 class="text-center">Авторизация</h1>
+            <div class="mb-3">
+                <div class="form-floating">
+                    {{ form.email | add_class:'form-control' |attr:"placeholder:Пользователь"}}
+                    {{ form.email.label_tag }}
+                </div>
+
             </div>
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Запомнить меня
-                </label>
+            <div class="mb-3">
+                <div class="form-floating">
+                    {#      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">#}
+                    {{ form.password | add_class:'form-control' |attr:"placeholder:Пароль"}}
+                    {{ form.password.label_tag }}
+                </div>
+            </div>
+            <div class="mb-3 form-check">
+                <input value="remember-me" type="checkbox" class="form-check-input" id="rememberme">
+                <label class="form-check-label" for="rememberme">Запомнить меня</label>
             </div>
             <input type="hidden" name="next" value="{{ next }}">
-            <button class="w-100 btn btn-lg btn-primary" type="submit" value="login">Войти</button>
-               <a href="{% url 'account_signup' %}"  class="w-100 px-10 btn btn-lg btn-primary">Зарегистрироваться</a>
+            <div class="mb-3">
+                <button class="w-100 btn btn-lg btn-primary" type="submit" value="login">Войти</button>
+            </div>
+            <div><a href="{% url 'account_signup' %}"
+                    class="w-100 px-10 btn btn-lg btn-primary">Зарегистрироваться</a></div>
             {#    <p class="mt-5 mb-3 text-muted">&copy; 2021</p>#}
-           </div>
+            </div>
         </form>
         {% for field in form %}
             {% for error in field.errors %}
@@ -49,7 +54,6 @@
             </div>
         {% endfor %}
 
-
         {#{% if next %}#}
         {#    {% if user.is_authenticated %}#}
         {#    <p>Ошибка доступа.</p>#}
@@ -57,8 +61,8 @@
         {#    <p>Please login to see this page.</p>#}
         {#    {% endif %}#}
         {#{% endif %}#}
-    </main>
 
+    </main>
 
     {# Assumes you setup the password_reset view in your URLconf #}
     {#<p><a href="{% url 'password_reset' %}">Lost password?</a></p>#}

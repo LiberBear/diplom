@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,84 +13,94 @@
 
     <!-- Bootstrap  CSS -->
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <!-- Иконка -->
     <link rel="icon" type="image/png" href="{% static "favicon.ico" %}">
     <!-- Свои стили-->
     <link href="{% static "css/main.css" %}" rel="stylesheet">
     {% block additional_styles %}
-    {# Дополнительные стили к конкретной странице #}
+        {# Дополнительные стили к конкретной странице #}
     {% endblock %}
-  </head>
-  <body>
-    <!-- Панель навигации -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div class="container">
+</head>
+<body style="padding-bottom: 150px;">
+<!-- Панель навигации -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
         <a class="navbar-brand" href="/">Заказ доставки воды в Чебоксарах</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-          
+            <ul class="navbar-nav ml-auto">
 
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'index' %}">Главная</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Главная</a>
+                </li>
 
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'offers_page' %}">Товары
-                <span class="sr-only">(оформление заказа)</span>
-              </a>
-            </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'offers_page' %}">Товары
+                        <span class="sr-only">(оформление заказа)</span>
+                    </a>
+                </li>
 
-            {% if request.user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cart_detail' %}">Корзина</a>
-            </li>
-            {% endif %}
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart_detail' %}">Корзина</a>
+                    </li>
+                {% endif %}
 
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        {% comment %} <a class="nav-link" href="{% url 'logout' %}">Выход</a> {% endcomment %}
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        {% comment %} <a class="nav-link" href="{% url 'login' %}">Вход</a> {% endcomment %}
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="text-end">
             {% if user.is_authenticated %}
-            <li class="nav-item">
-              {% comment %} <a class="nav-link" href="{% url 'logout' %}">Выход</a> {% endcomment %}
-            </li>
+                 <a href="{% url 'profile' %}" class="btn btn-warning me-2">Профиль</a>
+                <a href="{% url 'account_logout' %}" class="btn btn-outline-light ">Выйти</a>
             {% else %}
-            <li class="nav-item">
-              {% comment %} <a class="nav-link" href="{% url 'login' %}">Вход</a> {% endcomment %}
-            </li>
+                <a href="{% url 'account_login' %}" class="btn btn-warning me-2">Войти</a>
+                <a href="{% url 'account_signup' %}"class="btn btn-outline-light">Регистрация</a>
             {% endif %}
-          </ul>
         </div>
-      </div>
-    </nav>
-    <!-- Контент -->
-    <div class="container">
-      <div class="row">
-       {% block content %}
-      
-      {% endblock content %}
-          <!-- Еще один виджет 
-          <div class="card my-4">
-            <h5 class="card-header">Простой виджет</h5>
-            <div class="card-body">
-              Тут будет что-то очень интересное
-            </div>
-          </div>-->
-
-        </div>
-      </div>
     </div>
-    <!-- Подвал --> 
-{#    <footer class="footer bg-dark ">#}
-{#      <div class="container">#}
-{#        <p class="m-0 text-center text-white">Проект Федорова М.С</p>#}
-{#      </div>#}
-    </footer>
-    <!-- Библиотеки Bootstrap -->
-    <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
-    <script src="{% static "js/popper.min.js" %}"></script>
-    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</nav>
+<!-- Контент -->
+<div class="container">
+    <div class="row">
+        {% block content %}
 
-  </body>
+        {% endblock content %}
+        <!-- Еще один виджет
+        <div class="card my-4">
+          <h5 class="card-header">Простой виджет</h5>
+          <div class="card-body">
+            Тут будет что-то очень интересное
+          </div>
+        </div>-->
+
+    </div>
+</div>
+</div>
+<!-- Подвал -->
+<footer class="footer bg-dark fixed-bottom">
+    <div class="container">
+        <p class="p-2 text-center text-white">Диплом Федорова М.С</p>
+    </div>
+</footer>
+<!-- Библиотеки Bootstrap -->
+<script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+
+</body>
 
 </html>
