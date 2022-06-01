@@ -1,75 +1,60 @@
 {% extends "base.html" %}
-{% block title %}Корзина {{ cart.user }}{% endblock title %}
+{% block title %}Корзина {{ cart.user.first_name }}{% endblock title %}
 
 {% block content %}
-
-
-    {#<table class="table my-3 text-center">#}
-    {#    <caption>Сумма заказа {{cart.total}}</caption>#}
-    {#    <thead class="thead-dark">#}
-    {#      <tr>#}
-    {#        <th scope="col">#</th>#}
-    {#        <th scope="col">Наименование</th>#}
-    {#        <th scope="col">Цена</th>#}
-    {#        <th scope="col">Количество</th>#}
-    {#      </tr>#}
-    {#    </thead>#}
-    {#    <tbody>#}
-    {#      <tr>#}
-    {#        {% for item in cart_items %}#}
-    {#        <th scope="row"> {{ forloop.counter }}</th>#}
-    {#        <td>{{item.offer.title}}</td>#}
-    {#        <td>{{item.offer.price}}</td>#}
-    {#        <td>{{item.quantity}}</td>#}
-    {#      </tr>#}
-    {#      {% endfor%}#}
-    {#    </tbody>#}
-    {#  </table>#}
-    <div class="row">
-        <div class="col-md-12 col-lg-8">
-            <div class="items">
-                {% for item in cart_items %}
-                    <div class="product">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <img class="img-fluid mx-auto d-block image" src="{{ item.offer.img.url }}">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="info">
-                                    <div class="row">
-                                        <div class="col-md-5 product-name">
-                                            <div class="product-name">
-                                                <a href="#">{{ item.offer.title }}</a>
-                                                <div class="product-info">
-                                                    {{ item.offer.desc }}
+    {% if cart_items %}
+        <div class="row mt-5">
+            <div class="col-md-12 col-lg-8">
+                <div class="items">
+                    {% for item in cart_items %}
+                        <div class="product">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img class="img-fluid mx-auto d-block image" src="{{ item.offer.img.url }}">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="col-md-5 product-name">
+                                                <div class="product-name">
+                                                    <a href="#">{{ item.offer.title }}</a>
+                                                    <div class="product-info">
+                                                        {{ item.offer.desc }}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 quantity">
-                                            <label for="quantity">Quantity:</label>
-                                            <input id="quantity" type="number" value="{{ item.quantity }}"
-                                                   class="form-control quantity-input">
-                                        </div>
-                                        <div class="col-md-3 price">
-                                            <span>{{ item.total }} руб.</span>
+                                            <div class="col-md-4 quantity">
+                                                <label for="quantity">Количество:</label>
+                                                <input id="quantity" type="number" value="{{ item.quantity }}"
+                                                       class="form-control quantity-input">
+                                            </div>
+                                            <div class="col-md-3 price">
+                                                <span>{{ item.total }} руб.</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4">
+                <div class="summary">
+                    <h3>Расчет</h3>
+                    {#                <div class="summary-item"><span class="text">Подитог</span><span class="price">???</span></div>#}
+                    {#                <div class="summary-item"><span class="text">Скидка</span><span class="price">???</span></div>#}
+                    <div class="summary-item"><span class="text">Итог: </span><span class="price">{{ cart.total_price }} рублей</span>
                     </div>
-                    <hr>
-                {% endfor %}
+                    <a href="{% url 'cart_checkout' %}" class="btn btn-primary btn-lg btn-block">Оформить</a>
+                </div>
             </div>
         </div>
-        <div class="col-md-12 col-lg-4">
-            <div class="summary">
-                <h3>Расчет</h3>
-                <div class="summary-item"><span class="text">Подитог</span><span class="price">???</span></div>
-                <div class="summary-item"><span class="text">Скидка</span><span class="price">???</span></div>
-                <div class="summary-item"><span class="text">Итог</span><span class="price">{{ cart.total_price }}</span></div>
-                <a href="{% url 'cart_checkout' %}" class="btn btn-primary btn-lg btn-block">Оформить</a>
-            </div>
+    {% else %}
+        <div class="contaner">
+            {% include "cart/modal_cart_empty.html" %}
         </div>
-    </div>
+
+    {% endif %}
 {% endblock content %}

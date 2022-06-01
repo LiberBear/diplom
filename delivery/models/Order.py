@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.signals import pre_save
-
+from django.utils.timezone import now
 from backend.base_models import BaseModel
 
 from delivery.models.Promo import Promo
@@ -19,6 +19,13 @@ class OrderStatus(models.IntegerChoices):
     ERROR_INTERNAL = 7, "Внутренняя ошибка сервиса",
     ERROR_DELIVERY = 8, "Не доставлено",
     ERROR_STOCK = 9, "Нет остатков",
+
+
+class OrderPaymentType(models.IntegerChoices):
+    FIAT =0, "Наличные",
+    CC_OFFLINE = 1, "Банковской картой курьеру",
+    # CC_ONLINE = 2, "Банковской картой онлайн",
+    # PAYMENT_GATEWAY = 3, "Платежный шлюз"
 
 
 class Order(BaseModel):
@@ -55,6 +62,17 @@ class Order(BaseModel):
         choices=OrderStatus.choices,
         default=OrderStatus.CREATED,
         verbose_name="Статус заказа"
+    )
+
+    payment_type = models.IntegerField(
+        choices=OrderPaymentType.choices,
+        default=OrderPaymentType.FIAT,
+        verbose_name="Тип оплаты"
+    )
+
+    delivery_date = models.DateField(
+        verbose_name="Дата доставки",
+        default=now
     )
 
     class Meta:

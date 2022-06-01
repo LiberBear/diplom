@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models import F, Sum
-from django.db.transaction import atomic
 from django.db.models.signals import post_save
+from django.db.transaction import atomic
+from django.contrib.auth.models import User
 
 from backend.base_models import BaseModel
 
@@ -49,14 +49,24 @@ class Cart(BaseModel):
         if items.exists():
             items.all().delete()
 
+    @property
+    def items_count(self):
+        """Получить количество позиций в корзине"""
+        cart_items = CartItem.objects.filter(cart=self.id).prefetch_related("offer")
+        return cart_items.count()
+
     @atomic
     def recalc_total(self):
         """Пересчитать полную стоимость корзины"""
         cart_items = CartItem.objects.filter(cart=self.id).prefetch_related("offer")
-        annotation = cart_items.annotate(total_item=F('quantity')*F('offer__price'))
-        aggregation = annotation.aggregate(total_cart=Sum('total_item'))
-        self.total_price = aggregation.get('total_cart')
-        self.save()
+        if not cart_items.exists():
+            self.total_price = 0.0
+            self.save()
+        else:
+            annotation = cart_items.annotate(total_item=F('quantity')*F('offer__price'))
+            aggregation = annotation.aggregate(total_cart=Sum('total_item'))
+            self.total_price = aggregation.get('total_cart', 0.0)
+            self.save()
 
     class Meta:
         verbose_name = "Корзина"

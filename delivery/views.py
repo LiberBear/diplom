@@ -13,17 +13,17 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 # from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
 #accounts lib
 from account.views import LoginView as LoginView_
 from account.views import SignupView as SignupView_
 
 #delivery
-from delivery.models.Cart import Cart, CartItem, TooBigCartException
+from delivery.models.Cart import Cart, CartItem, TooBigCartException, TooLowCartException
 from delivery.models.Offer import Offer, OutOfStockException
 from delivery.models.Profile import Profile
-from delivery.forms import AddToCartForm, OfferForm
+from delivery.forms import AddToCartForm, CartCheckoutForm
 
 
 from carousel.models import CarouselPost
@@ -65,12 +65,32 @@ class ProfileView(TemplateView):
 @method_decorator(login_required, name='dispatch')
 class CartView(TemplateView):
     """Страница корзины"""
-    template_name = 'cart/detail.htmls'
+    template_name = 'cart/detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
+        cart_items = CartItem.objects.filter(cart=cart, quantity__gt=0) # пустые позиции не берем
+        context['cart_items'] = cart_items
+        context['cart'] = cart
+        return context
+
+
+class CartCheckoutView(FormView):
+    template_name = 'cart/checkout.html'
+    form_class = CartCheckoutForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, ordered=False)
         cart_items = CartItem.objects.filter(cart=cart)
         context['cart_items'] = cart_items
         context['cart'] = cart
@@ -79,7 +99,7 @@ class CartView(TemplateView):
 
 @csrf_exempt
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "DELETE"])
 def cart_manage(request):
     """Добавление и удаление позиций в корзине"""
 
@@ -90,6 +110,7 @@ def cart_manage(request):
         data = json.loads(request.body)
     except ValueError:
         return JsonResponse({'status': 'error', 'msg': 'Bad json'}, status=400)
+
     # сама обработка запроса
     form = AddToCartForm(data)
     if not form.is_valid():
@@ -103,27 +124,26 @@ def cart_manage(request):
 
     user = request.user
     cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
-    cart_item, _ = CartItem.objects.get_or_create(cart=cart, offer=offer)
-
-    try:
-        cart_item.increase(amount=quantity)
-    except OutOfStockException as e:
-        return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
-    except TooBigCartException as e:
-        return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
-
-    return JsonResponse({'status': 'ok', 'msg': "Товар успешно добавлен в корзину"})
-
-
-@login_required
-def cart_checkout(request):
-    user = request.user
-    cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
-    cart_items = CartItem.objects.filter(cart=cart)
-    #address = Addr
-    template = loader.get_template('cart/checkout.html')
-    context = {'cart_items': cart_items, 'cart': cart}
-    return HttpResponse(template.render(context, request))
+    # в зависимости от типа запроса
+    # удаляем или добавляем товар в корзине
+    if request.method == "POST":
+        cart_item, _ = CartItem.objects.get_or_create(cart=cart, offer=offer)
+        try:
+            cart_item.increase(amount=quantity)
+        except OutOfStockException as e:
+            return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+        except TooBigCartException as e:
+            return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+        return JsonResponse({'status': 'ok', 'msg': "Товар успешно добавлен в корзину"})
+    elif request.method == "DELETE":
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, offer=offer)
+        if created:
+            return  JsonResponse({'status': 'error', 'msg': f'В корзину добавлено {quantity} позиций'}, status=400)
+        try:
+            cart_item.decrease(amount=quantity)
+        except TooLowCartException as e:
+            return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+        return JsonResponse({'status': 'ok', 'msg': f'Из корзины удалено {quantity} позиций'})
 
 
 # CUSTOM AUTH

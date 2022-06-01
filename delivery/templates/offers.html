@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Главная{% endblock title %}
+{% block title %}Товары{% endblock title %}
 {% load static %}
 
 {% block content %}
@@ -17,17 +17,40 @@
                         <div class="card-text">{{ offer.desc }}</div>
                     </div>
                     <div class="card-footer">
-                        <div class="d-flex justify-content-between">
-                            <div class="w-25">
-                                <input type="number" class="form-control" value="1">
+                        <form onsubmit="return false">
+                            <div class="d-flex justify-content-between">
+                                {% if user.is_authenticated %}
+                                    <div class="w-25">
+                                        <input type="number" class="form-control" min="1"
+                                               max="{{ offer.stock }}" value="1">
+                                    </div>
+                                    <div>
+                                        <button data-id="{{ offer.id }}" type="button"
+                                                class="btn btn-primary btn-offer"><i class="bi bi-cart4"></i></button>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center">Для добавления товара в корзину <a href="{% url 'account_login' %}">авторизируйтесь</a></div>
+                                {% endif %}
                             </div>
-                            <div>
-                                <button class="btn btn-primary"><i class="bi bi-cart4"></i></button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         {% endfor %}
+
+    </div>
+    <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="cart_toast"
+             style="position: absolute; top: 0; right: 0;">
+            <div class="toast-header">
+                {#    <img src="..." class="rounded me-2" alt="...">#}
+                <strong class="me-auto">Корзина</strong>
+                <small>Сейчас</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Позиция добавлена в корзину
+            </div>
+        </div>
     </div>
 {% endblock %}

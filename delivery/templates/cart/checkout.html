@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Оформление заказа
+    Оформление заказа
 {% endblock %}
 
 {% block additional_styles %}
@@ -10,5 +10,74 @@
 {% endblock %}
 
 {% block content %}
+
+    <div class="container mt-5">
+        <div class="row g-5">
+            <h2 class="text-center">Оформление заказа</h2>
+            <div class="col-md-5 col-lg-4 order-md-last">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary"><a href="{% url 'cart_detail' %}">Ваша корзина</a></span>
+                    <span class="badge bg-primary rounded-pill">{{ cart_items | length }}</span>
+                </h4>
+                <ul class="list-group mb-3">
+                    {% for cart_item in cart_items %}
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">{{ cart_item.offer.title }} x{{ cart_item.quantity }}</h6>
+                                <small class="text-muted">{{ cart_item.offer.desc }} </small>
+                            </div>
+                            <span class="text-muted">{{ cart_item.total }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                {#            <form class="card p-2">#}
+                {#                <div class="input-group">#}
+                {#                    <input type="text" class="form-control" placeholder="Promo code">#}
+                {#                    <button type="submit" class="btn btn-secondary">Redeem</button>#}
+                {#                </div>#}
+                {#            </form>#}
+            </div>
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mb-3">Адрес доставки</h4>
+                <form class="needs-validation" method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="id_city" class="form-label">Город</label>
+                            {{ form.city }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_street" class="form-label">Улица</label>
+                            {{ form.street }}
+                        </div>
+                        <div class="col-12">
+                            <label for="id_house" class="form-label">Дом</label>
+                            {{ form.house }}
+                        </div>
+                        <div class="col-12">
+                        <label for="date_picker" class="form-label">Дата доставки</label>
+                        {{ form.delivery_date }}
+                        </div>
+                    </div>
+                    <hr class="my-4">
+
+                    <h4 class="mb-3">Оплата</h4>
+
+                    <div class="my-1">
+                        <div class="form-check">
+                            {{ form.payment_type }}
+                        </div>
+                    </div>
+
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Оформить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
 
 {% endblock %}
