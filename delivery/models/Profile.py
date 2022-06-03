@@ -22,12 +22,7 @@ class Profile(BaseModel):
         null=True,
         verbose_name='Дата рождения',
     )
-    address = models.CharField(
-        blank=True,
-        null=True,
-        max_length=500,
-        verbose_name='Адрес проживания',
-    )
+
     phone_number = PhoneNumberField(
         blank=True,
         null=True,

@@ -39,40 +39,18 @@
                 {#            </form>#}
             </div>
             <div class="col-md-7 col-lg-8">
-                <h4 class="mb-3">Адрес доставки</h4>
+                <h4 class="mb-3">Данные для оформлнения</h4>
                 <form class="needs-validation" method="post">
                     {% csrf_token %}
                     <div class="row g-3">
-                        <div class="col-12">
-                            <label for="id_city" class="form-label">Город</label>
-                            {{ form.city }}
-                        </div>
-                        <div class="col-12">
-                            <label for="id_street" class="form-label">Улица</label>
-                            {{ form.street }}
-                        </div>
-                        <div class="col-12">
-                            <label for="id_house" class="form-label">Дом</label>
-                            {{ form.house }}
-                        </div>
-                        <div class="col-12">
-                        <label for="date_picker" class="form-label">Дата доставки</label>
-                        {{ form.delivery_date }}
-                        </div>
+                        {% for field in form %}
+                            <div class="col-12">
+                                <label for="id_city" class="form-label">{{ field.label_tag }}</label>
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <hr class="my-4">
                     </div>
-                    <hr class="my-4">
-
-                    <h4 class="mb-3">Оплата</h4>
-
-                    <div class="my-1">
-                        <div class="form-check">
-                            {{ form.payment_type }}
-                        </div>
-                    </div>
-
-
-                    <hr class="my-4">
-
                     <button class="w-100 btn btn-primary btn-lg" type="submit">Оформить</button>
                 </form>
             </div>

@@ -41,7 +41,7 @@ class Order(BaseModel):
     address = models.ForeignKey(
         Address,
         verbose_name="Адрес",
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
 
     comment = models.CharField(
@@ -80,7 +80,12 @@ class Order(BaseModel):
         verbose_name_plural = "Заказы"
 
     def __str__(self):
-        return f'Заказ {self.id} на основе {self.cart}'
+        return f'Заказ {self.cart.id}'
+
+    def save(self, *args, **kwargs):
+        self.cart.set_ordered()
+        self.sum = self.cart.total_price
+        super(Order, self).save(*args, **kwargs)
 
 
 def order_pre_save(sender, instance: Order, *args, **kwargs):

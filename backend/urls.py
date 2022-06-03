@@ -21,13 +21,16 @@ from django.conf import settings
 from delivery.views import LoginView, SignupView
 
 urlpatterns = [
+    # панель администратора
     path('admin/', admin.site.urls),
+    # действия с аккаунтом
     path('account/login/', LoginView.as_view(), name='account_login'),
     path('account/signup/', SignupView.as_view(), name='account_signup'),
     path('account/', include("account.urls")),
-    path('', include('delivery.urls')) # основное приложение
+    # загрузка маршрутизации основного приложения
+    path('', include('delivery.urls'))
 ]
 
-#если дебаг можем отдавать медиа файлы без веб сервера
+# если проект в отладке можем отдавать медиа файлы без веб сервера
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

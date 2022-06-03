@@ -4,7 +4,7 @@
 
 {% block content %}
     {% if not offers %}
-        <h5 class="text-lg-center text-dark pt-5">Список продукции пока пуст, возращайтесь позже</h5>
+        <h5 class="text-lg-center text-dark pt-5">Список продукции пока пуст или закончилось его наличие, возращайтесь позже</h5>
     {% endif %}
     <div class="row row-col-1 row-cols-md-3 g-4">
         {% for offer in offers %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Редактирование адреса{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% include "profile/menu.html" %}
+            </div>
+            <div class="col-md-8 ms-auto">
+                <h2 class="text-center">Удаление адреса</h2>
+                <div class="text-center">
+                    <form method="post">{% csrf_token %}
+                        <p>Вы уверены что хотите удалить адрес "{{ object }}"?</p>
+                        {{ form }}
+                        <input class="btn btn-danger" type="submit" value="Подтвердить">
+                        <a class="btn btn-primary" href="{% url 'address_list' %}">Назад</a>
+                        </form>
+                </div>
+                <!--Дальше не трогаем -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

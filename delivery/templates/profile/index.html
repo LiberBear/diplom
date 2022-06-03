@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Профиль пользователя{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% include "profile/menu.html" %}
+            </div>
+            <div class="col-md-8 ms-auto">
+                <h2 class="text-center">Заказы</h2>
+            {% include "profile/order/orders_table.html" %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

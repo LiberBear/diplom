@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Редактирование адреса{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% include "profile/menu.html" %}
+            </div>
+            <div class="col-md-8 ms-auto">
+                <h2 class="text-center">Редактирование адреса</h2>
+
+                <form method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Изменить">
+                    <a class="btn btn-warning" href="{% url 'address_list' %}">Назад</a>
+                </form>
+                <!--Дальше не трогаем -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

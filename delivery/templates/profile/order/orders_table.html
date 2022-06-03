@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Адрес</th>
+        <th scope="col">Количество позиций</th>
+        <th scope="col">Сумма</th>
+        <th scope="col">Статус</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr>
+        <th scope="row">{{ order.cart.id }}</th>
+        <td><a href="{% url 'order_success' order.cart.id  %}">{{ order.address }}  </a></td>
+        <td>{{ order.cart.items_count }}</td>
+        <td>{{ order.sum }}</td>
+        <td>{{ order.get_status_display }}</td>
+    {% endfor %}
+      </tr>
+</table>

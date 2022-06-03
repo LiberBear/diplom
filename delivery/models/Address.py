@@ -1,35 +1,17 @@
 from django.db import models
 
 from backend.base_models import BaseModel
+from django.contrib.auth.models import User
 
 
 class Address(BaseModel):
     """Модель адреса доставки"""
-
-    city = models.CharField(
-        max_length=32,
-        verbose_name="Город"
-    )
-
-    street = models.CharField(
-        max_length=64,
-        verbose_name="Улица"
-    )
-
-    house = models.IntegerField(
-        verbose_name="Дом"
-    )
-
-    apartment = models.IntegerField(
-        verbose_name="Квартира"
-    )
-
-    addition = models.CharField(
-        max_length=64,
-        verbose_name="Дополнительно",
-        blank=True,
-        null=True
-    )
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
+    city = models.CharField(verbose_name="Город", max_length=32)
+    street = models.CharField(verbose_name="Улица", max_length=64)
+    house = models.IntegerField(verbose_name="Дом")
+    apartment = models.IntegerField(verbose_name="Квартира")
+    addition = models.CharField(verbose_name="Дополнительно", max_length=64, blank=True, null=True)
 
     class Meta:
         verbose_name = "Aдрес"

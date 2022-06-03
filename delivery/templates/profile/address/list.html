@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Адреса пользователя{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% include "profile/menu.html" %}
+            </div>
+            <div class="col-md-8 ms-auto">
+                <h2 class="text-center">Адреса доставок</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Адрес</th>
+                        <th scope="col">Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for adr in addresses %}
+                        <tr>
+                            <td>{{ adr.id }}</td>
+                            <td>{{ adr }}</td>
+                            <td><a href="{% url 'address_update' adr.id %}">Изменить</a> / <a
+                                    href="{% url 'address_delete' adr.id %}">Удалить</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-primary" href="{% url 'address_create' %}">Добавить</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

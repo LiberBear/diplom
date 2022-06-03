@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Профиль {{ profile.user.email }}</h5>
+        <a href="{% url 'account_logout' %}" class="btn btn-primary">Выйти</a>
+    </div>
+</div>
+<div class="list-group mt-3 mb-3">
+    {#                    <li class="list-group-item disabled" aria-disabled="true">A disabled item</li>#}
+    <a class="list-group-item {% if request.path == '/profile/' %}active{% endif %}" href="{% url 'profile' %}">Мои заказы</a>
+    <a class="list-group-item {% if request.path == '/profile/address/' %}active{% endif %}" href="{% url 'address_list' %}">Мои адреса</a>
+    <a class="list-group-item {% if request.path == '/profile/settings/' %}active{% endif %} disabled"">Настройки</a>
+{#    <a class="list-group-item" href="{% url 'account_logout' %}">Выход</a>#}
+</div>

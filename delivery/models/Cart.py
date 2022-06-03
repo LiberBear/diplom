@@ -68,6 +68,16 @@ class Cart(BaseModel):
             self.total_price = aggregation.get('total_cart', 0.0)
             self.save()
 
+    @atomic
+    def set_ordered(self):
+        self.recalc_total()
+        cart_items = CartItem.objects.filter(cart=self.id).prefetch_related("offer")
+        print(cart_items)
+        for cart_item in cart_items:
+            cart_item.offer.decrease_stock(cart_item.quantity)
+        self.ordered = True
+        self.save()
+
     class Meta:
         verbose_name = "Корзина"
         verbose_name_plural = "Корзины"

@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.transaction import atomic
 
 from backend.base_models import BaseModel
 
@@ -69,21 +70,25 @@ class Offer(BaseModel):
         default=False
     )
 
+    @atomic
     def increase_stock(self, count=1):
         self.stock = self.stock + count
         self.save()
 
+    @atomic
     def decrease_stock(self, count=1):
+        print(f'decrease stock from {self.stock} to {count}')
         self.stock = self.stock - count
         self.save()
 
+    @atomic
     def set_stock(self, val=0):
         self.stock = val
         self.save()
 
+    @atomic
     def have_stock(self) -> bool:
         return self.stock > 0
-
 
     class Meta:
         verbose_name = "Товар"
