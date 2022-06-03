@@ -3,7 +3,6 @@ from django.db.models.signals import pre_save
 from django.utils.timezone import now
 from backend.base_models import BaseModel
 
-from delivery.models.Promo import Promo
 from delivery.models.Cart import Cart
 from delivery.models.Address import Address
 
