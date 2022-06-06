@@ -9,11 +9,32 @@
 {% endblock %}
 {% block content %}
     <main class="form-signin">
-        <form method="POST">
-           {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" class="btn btn-info" value="Зарегистрироваться">
-        </form>
+        <div class="text-center">
+            <form method="POST">
+                <h1 class="text-center">Регистрация</h1>
+                {% csrf_token %}
+
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            {% render_field field class+="form-control" %}
+                            <label>{{ field.label_tag }}</label>
+                        </div>
+                    </div>
+                          {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+                {% endfor %}
+                <input type="submit" class="btn btn-lg btn-primary" value="Зарегистрироваться">
+
+            </form>
+        </div>
+
+
         {#{% if next %}#}
         {#    {% if user.is_authenticated %}#}
         {#    <p>Ошибка доступа.</p>#}
