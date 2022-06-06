@@ -1,0 +1,19 @@
+services:
+  caddy:
+    image: caddy
+    container_name: caddy_reverse_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./backend/static:/public/static:ro
+      - ./backend/media:/public/media
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    container_name: django_backend
+    volumes:
+      - ./backend:/app
+      - ./django.log:/var/log/django.log

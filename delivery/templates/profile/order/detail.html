@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Просмотр заказа{% endblock title %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% include "profile/menu.html" %}
+            </div>
+            <div class="col-md-8 ms-auto">
+                <h2 class="text-center">Данные заказа {{ object.cart.id}} </h2>
+
+                    <div>
+                        <h3>Состав заказа:</h3>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Наименование</th>
+                                <th>Количество</th>
+                                <th>Цена</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cart_item in cart_items %}
+                            <tr>
+                                <td>{{ cart_item.offer.title }}</td>
+                                <td>{{ cart_item.quantity }}</td>
+                                <td>{{ cart_item.total }} руб.</td>
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                        <p><b>Итог: </b>{{ object.sum }} руб.</p>
+                    <h3>Адрес заказа:</h3>
+                    <p>{{ object.address }}</p>
+                    <h3>Статус:</h3>
+                    <p>{{ object.get_status_display }}</p>
+                    <h3>Оплата:</h3>
+                    <p>{{ order.get_payment_type_display }}</p>
+                     <h3>Дата доставки:</h3>
+                    <p>{{ order.delivery_date | date }}</p>
+                    </div>
+                <!--Дальше не трогаем -->
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

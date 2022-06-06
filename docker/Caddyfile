@@ -1,0 +1,16 @@
+upscale.work
+
+route {
+	file_server /static/* {
+		root /public
+	}
+}
+
+route {
+	file_server /media/* {
+		root /public
+	}
+}
+
+reverse_proxy backend:8080
+
