@@ -19,3 +19,7 @@ class Address(BaseModel):
 
     def __str__(self):
         return f'{self.city} {self.street} {self.house} {self.apartment}'
+
+    @property
+    def full_addr(self):
+        return str(self)

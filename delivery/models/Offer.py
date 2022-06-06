@@ -72,22 +72,26 @@ class Offer(BaseModel):
 
     @atomic
     def increase_stock(self, count=1):
+        # увеличить количество доступных остатков
         self.stock = self.stock + count
         self.save()
 
     @atomic
     def decrease_stock(self, count=1):
+        # уменьшить количество доступных остатков
         print(f'decrease stock from {self.stock} to {count}')
         self.stock = self.stock - count
         self.save()
 
     @atomic
     def set_stock(self, val=0):
+        # установить количество доступных остатков
         self.stock = val
         self.save()
 
     @atomic
     def have_stock(self) -> bool:
+        # проверить есть ли остатки
         return self.stock > 0
 
     class Meta:

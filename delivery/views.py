@@ -52,7 +52,7 @@ class OffersView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        offers = Offer.objects.filter(stock__gt=0)
+        offers = Offer.objects.filter(stock__gt=0, hidden=False)
         context['offers'] = offers
         return context
 
@@ -261,4 +261,5 @@ class OrderSuccessView(DetailView):
         cart_items = CartItem.objects.filter(cart=object.cart)
         print(cart_items)
         context['cart_items'] = cart_items
+        context['profile'] = Profile.objects.get(user=self.request.user)
         return context

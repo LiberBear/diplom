@@ -24,10 +24,6 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, [])
 )
 environ.Env.read_env()
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -51,7 +47,6 @@ INSTALLED_APPS = [
     'account',
     'phonenumber_field',
     'delivery',
-    #'messenger',
     'carousel'
 ]
 
@@ -145,7 +140,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/user_media/'
 ADMIN_MEDIA_PREFIX = '/admin_media/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 # EXTRA
 SITE_ID = 1
 PROJECT_NAME = env('PROJECT_NAME')

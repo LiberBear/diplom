@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.timezone import now
+
 from backend.base_models import BaseModel
 
 from delivery.models.Cart import Cart
@@ -93,6 +94,7 @@ def order_pre_save(sender, instance: Order, *args, **kwargs):
     cart.is_ordered = True  # устанавливаем флаг на корзину
     cart.recalc_total() # пересчет корзины
 
+pre_save.connect(order_pre_save, sender=Order)
 
 # def order_post_save(sender, instance: Order, *args, **kwargs):
 #     """Доп процедуры после сохранения заказа"""
@@ -101,6 +103,6 @@ def order_pre_save(sender, instance: Order, *args, **kwargs):
 #     cart.save()
 
 
-pre_save.connect(order_pre_save, sender=Order)
+
 #post_save.connect(order_post_save, sender=Order)
 

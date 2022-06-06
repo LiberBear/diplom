@@ -10,12 +10,12 @@ def carousel_directory_path(instance, filename):
 class CarouselPost(models.Model):
     title = models.CharField(
         verbose_name="Заголовок",
-        max_length=32
+        max_length=64
     )
 
     desc = models.CharField(
         verbose_name="Описание",
-        max_length=64
+        max_length=128
     )
 
     img = models.ImageField(
