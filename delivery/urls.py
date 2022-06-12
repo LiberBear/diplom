@@ -4,11 +4,13 @@ from delivery.views import IndexView, OffersView, CartView, ProfileView, CartChe
 from delivery.views import AddressListView, AddressUpdateView, AddressDeleteView, AddressCreateView
 from delivery.views import cart_manage
 from delivery.views import OrderSuccessView
+from delivery.views import SettingsView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('offers/', OffersView.as_view(), name='offers_page'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/settings/', SettingsView.as_view(), name='profile_settings'),
     # Адреса
     path('profile/address/', AddressListView.as_view(), name='address_list'),
     path('profile/address/create/', AddressCreateView.as_view(), name='address_create'),

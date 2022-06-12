@@ -10,25 +10,27 @@ $(".btn-offer").click(function () {
         dataType: "json",
         data: JSON.stringify(payload),
     }).done(function () {
+        let msg = "Позиция добавлена в корзину";
+        $('#cart_toast').find('.toast-body').text(msg);
         $('#cart_toast').toast('show');
+        form.empty();
+        form.html("<div class=\"text-center\">"+msg+"</div>")
+
     }).fail(function (jqXHR, exception) {
         // Our error logic here
         var msg = '';
         if (jqXHR.status === 0) {
             msg = 'Not connect.\n Verify Network.';
-        } else if (jqXHR.status == 404) {
-            msg = 'Requested page not found. [404]';
-        } else if (jqXHR.status == 500) {
-            msg = 'Internal Server Error [500].';
-        } else if (exception === 'parsererror') {
-            msg = 'Requested JSON parse failed.';
-        } else if (exception === 'timeout') {
-            msg = 'Time out error.';
-        } else if (exception === 'abort') {
-            msg = 'Ajax request aborted.';
+            alert(msg);
+        } else if (jqXHR.status == 400) {
+            let response = JSON.parse(jqXHR.responseText);
+            $('#cart_toast').find('.toast-body').text(response.msg);
+            $('#cart_toast').toast('show');
         } else {
             msg = 'Uncaught Error.\n' + jqXHR.responseText;
+            alert(msg);
         }
-        alert(msg);
+
     });
 });
+

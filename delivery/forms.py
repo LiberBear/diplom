@@ -4,6 +4,8 @@ from delivery.models import Address
 from delivery.models.Offer import Offer
 from delivery.models.Order import Order, OrderPaymentType
 
+from phonenumber_field.formfields import PhoneNumberField
+
 
 class OfferForm(forms.ModelForm):
     """Форма для вывода информации об оффере"""
@@ -21,6 +23,7 @@ class AddToCartForm(forms.Form):
 
 class CartCheckoutForm(forms.Form):
     """Форма оформления заказа"""
+
     def __init__(self, user, *args, **kwargs):
         super(CartCheckoutForm, self).__init__(*args, **kwargs)
         self.fields['address'].queryset = Address.objects.filter(user=user)
@@ -50,3 +53,16 @@ class CartCheckoutForm(forms.Form):
             'type': 'date'
         }),
     )
+
+
+class ProfileForm(forms.Form):
+    birth_date = forms.DateField(
+        label="Дата рождения",
+        required=True,
+        widget=forms.DateInput(attrs={
+            'id': 'date_picker',
+            'class': 'form-control',
+            # 'type': 'date'
+        }),
+    )
+    phone_number = PhoneNumberField(label="Телефон")

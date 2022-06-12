@@ -63,9 +63,7 @@
             </ul>
         </div>
         <div class="text-end">
-
             <a class="btn btn-primary" href="tel:+79276651334">Заказать по телефону</a>
-
             {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}" class="btn btn-warning me-2">Профиль</a>
                 <a href="{% url 'account_logout' %}" class="btn btn-outline-light ">Выйти</a>
@@ -80,23 +78,14 @@
 <div class="container">
     <div class="row">
         {% block content %}
-
         {% endblock content %}
-        <!-- Еще один виджет
-        <div class="card my-4">
-          <h5 class="card-header">Простой виджет</h5>
-          <div class="card-body">
-            Тут будет что-то очень интересное
-          </div>
-        </div>-->
-
     </div>
 </div>
 </div>
 <!-- Подвал -->
 <footer class="footer bg-dark fixed-bottom">
     <div class="container">
-        <p class="p-2 text-center text-white">Диплом Федорова М.С</p>
+        <p class="text-center"><a href="#" class="text-white text-decoration-none">О нас</a></p>
     </div>
 </footer>
 <!-- Библиотеки Bootstrap -->

@@ -19,18 +19,16 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 # DetailView, ListView,
 from django.views.generic import TemplateView, FormView
 
-
-#accounts lib
+# accounts lib
 from account.views import LoginView as LoginView_
 from account.views import SignupView as SignupView_
 
-#delivery
+# delivery
 from delivery.models.Cart import Cart, CartItem, TooBigCartException, TooLowCartException
 from delivery.models.Offer import Offer, OutOfStockException
 from delivery.models.Profile import Profile
 from delivery.models.Address import Address
-from delivery.forms import AddToCartForm, CartCheckoutForm
-
+from delivery.forms import AddToCartForm, CartCheckoutForm, ProfileForm
 
 from carousel.models import CarouselPost
 
@@ -78,7 +76,7 @@ class CartView(TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         cart, _ = Cart.objects.get_or_create(user=user, ordered=False)
-        cart_items = CartItem.objects.filter(cart=cart, quantity__gt=0) # пустые позиции не берем
+        cart_items = CartItem.objects.filter(cart=cart, quantity__gt=0)  # пустые позиции не берем
         context['cart_items'] = cart_items
         context['cart'] = cart
         return context
@@ -166,7 +164,7 @@ def cart_manage(request):
     elif request.method == "DELETE":
         cart_item, created = CartItem.objects.get_or_create(cart=cart, offer=offer)
         if created:
-            return  JsonResponse({'status': 'error', 'msg': f'В корзину добавлено {quantity} позиций'}, status=400)
+            return JsonResponse({'status': 'error', 'msg': f'В корзину добавлено {quantity} позиций'}, status=400)
         try:
             cart_item.decrease(amount=quantity)
         except TooLowCartException as e:
@@ -181,6 +179,37 @@ class LoginView(LoginView_):
 
 class SignupView(SignupView_):
     identifier_field = 'email'
+
+
+class SettingsView(FormView):
+    template_name = 'profile/settings.html'
+    form_class = ProfileForm
+
+    success_url = '/profile/settings/'
+
+    def form_valid(self, form):
+        # метод вызывается после
+        # проверки формы на корректность
+        # полученных данных
+        profile = Profile.objects.get(user=self.request.user)
+        profile.birth_date = form.cleaned_data['birth_date']
+        profile.phone_number = form.cleaned_data['phone_number']
+        profile.save()
+        return HttpResponseRedirect(reverse_lazy('profile_settings'))
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.user.is_authenticated:
+            profile, _ = Profile.objects.get_or_create(user=self.request.user)
+            initial.update({'birth_date': profile.birth_date})
+            initial.update({'phone_number': profile.phone_number})
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile, _ = Profile.objects.get_or_create(user=self.request.user)
+        context['profile'] = profile
+        return context
 
 
 # Address
@@ -248,7 +277,6 @@ class AddressCreateView(CreateView):
 
 
 class OrderSuccessView(DetailView):
-
     template_name = 'profile/order/detail.html'
     model = Order
 
