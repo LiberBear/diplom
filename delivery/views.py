@@ -125,7 +125,7 @@ class CartCheckoutView(FormView):
 
 @csrf_exempt
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "PUT"])
 def cart_manage(request):
     """Добавление и удаление позиций в корзине"""
 
@@ -164,12 +164,30 @@ def cart_manage(request):
     elif request.method == "DELETE":
         cart_item, created = CartItem.objects.get_or_create(cart=cart, offer=offer)
         if created:
-            return JsonResponse({'status': 'error', 'msg': f'В корзину добавлено {quantity} позиций'}, status=400)
+            return JsonResponse({'status': 'error', 'msg': f'Этой позиции раньше не было. Удаление отменено.'},
+                                status=400)
         try:
             cart_item.decrease(amount=quantity)
         except TooLowCartException as e:
             return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
         return JsonResponse({'status': 'ok', 'msg': f'Из корзины удалено {quantity} позиций'})
+    elif request.method == "PUT":
+        cart_item, _ = CartItem.objects.get_or_create(cart=cart, offer=offer)
+        try:
+            cart_item.set(amount=quantity)
+            cart_item_dict = {"offer": cart_item.offer.id, "quantity": cart_item.quantity, "total": cart_item.total}
+            cart.recalc_total()
+
+        except OutOfStockException as e:
+            return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+        except TooBigCartException as e:
+            return JsonResponse({'status': 'error', 'msg': str(e)}, status=400)
+        return JsonResponse({
+            'status': 'ok',
+            'msg': f'Товару успешно установлено количество {quantity}',
+            "cart_item": cart_item_dict,
+            "cart_total": cart.total_price
+        })
 
 
 # CUSTOM AUTH

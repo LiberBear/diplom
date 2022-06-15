@@ -25,10 +25,10 @@
                                             </div>
                                             <div class="col-md-4 quantity">
                                                 <label for="quantity">Количество:</label>
-                                                <input min="1" max="{{ item.offer.stock }}" id="quantity" type="number" value="{{ item.quantity }}"
+                                                <input data-itemid="{{ item.offer.id }}" min="1" max="{{ item.offer.stock }}" id="quantity" type="number" value="{{ item.quantity }}"
                                                        class="form-control quantity-input">
                                             </div>
-                                            <div class="col-md-3 price">
+                                            <div class="col-md-3 price cart_item_price">
                                                 <span>{{ item.total }} руб.</span>
                                             </div>
                                         </div>
@@ -45,7 +45,7 @@
                     <h3>Расчет</h3>
                     {#                <div class="summary-item"><span class="text">Подитог</span><span class="price">???</span></div>#}
                     {#                <div class="summary-item"><span class="text">Скидка</span><span class="price">???</span></div>#}
-                    <div class="summary-item"><span class="text">Итог: </span><span class="price">{{ cart.total_price }} рублей</span>
+                    <div class="summary-item"><span class="text">Итог: </span><span class="price cart_price">{{ cart.total_price }} рублей</span>
                     </div>
                     <a href="{% url 'cart_checkout' %}" class="btn btn-primary btn-lg btn-block">Оформить</a>
                 </div>

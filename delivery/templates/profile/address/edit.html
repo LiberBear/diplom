@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Редактирование адреса{% endblock title %}
 {% load static %}
-
+{% load widget_tweaks %}
 {% block content %}
     <div class="container my-5">
         <div class="row">
@@ -11,9 +11,16 @@
             <div class="col-md-8 ms-auto">
                 <h2 class="text-center">Редактирование адреса</h2>
 
-                <form method="post">{% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Изменить">
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <p>
+                            {{ field.label_tag }}
+                            {{ field | add_class:'form-control'}}
+                        </p>
+                    {% endfor %}
+                    <input  class="btn btn-primary" type="submit" value="Изменить">
                     <a class="btn btn-warning" href="{% url 'address_list' %}">Назад</a>
                 </form>
                 <!--Дальше не трогаем -->
